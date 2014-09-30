@@ -10,6 +10,11 @@ https://www.facebook.com/events/718375174865939
 - 場所: 各自好きなところ(通常は自室)
 - チャットツール: Slack(後日用意)
 
+## メンバー構成
+
+- サーバーサイド: @yabuchin ([Go](https://github.com/SYM-CONTEST/Cookpad2014/issues/2))
+- iOSクライアント: @mono0926
+
 ## スケジュール
 
 1. 9〜10時: ネタ出し
