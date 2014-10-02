@@ -12,7 +12,7 @@ https://www.facebook.com/events/718375174865939
 
 ## メンバー構成
 
-- サーバーサイド: @yabuchin ([Go](https://github.com/SYM-CONTEST/Cookpad2014/issues/2))
+- サーバーサイド: @yabuchin ([Go](https://github.com/SYM-CONTEST/Cookpad2014/issues/2)), @sykall (DB, etc)
 - iOSクライアント: @mono0926
 - デザイン・WEBサイト: @memesheep
 
