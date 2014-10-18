@@ -153,6 +153,7 @@ func getResult(c *gin.Context) {
 
 	// 認証した人のcrawlerを生成
 	cr := crawler.NewCrawler(accessToken.Token, accessToken.Secret)
+
 	// 認証した人のメンションを分析してそれっぽい記念日群を抽出
 	as := cr.AnalyzeAnniversary()
 	// ただの確認出力なので不要
@@ -166,24 +167,25 @@ func getResult(c *gin.Context) {
 	second, statusId := a.CreateSecondMessage()
 	//log.Println(second)
 
-	embed := a.GetEmbededHTML(statusId)
+	//embed := a.GetEmbededHTML(statusId)
+	embed := cr.GetOEmbed(statusId)
 	// aniversaryをDBに保存
 	aniversary := new(models.Aniversary)
-	id, _ := aniversary.Create(first, second, a.Names(), embed)
+	id, _ := aniversary.Create(first, second, a.Names(), embed.Html, embed.Url)
 
 	// Tweet用メッセージ
 	var names []string = make([]string, len(a.Names()))
 	for key, val := range a.Names() {
 		names[key] = "@" + val
 	}
-	full := "." + a.CreateFullMessage(first, second)
+	full := a.CreateFullMessage(first, second)
 	log.Println(full)
 	// Tweetする時はこれで
-	//	c.PostByAniv(full)
+	//cr.PostByAniv(full + " http://kinen.yabuchin.com/a/" + id)
 
-	fmt.Println("full: ", full)
+	fmt.Println("full: ", full + " http://kinen.yabuchin.com/a/" + id)
 
-	obj := gin.H{"full": full, "first": first, "second": second, "users": a.Names(), "embed": embed, "id": id}
+	obj := gin.H{"full": "." + full, "first": first, "second": second, "users": a.Names(), "embed": embed, "id": id, "url": embed.Url}
 	c.HTML(200, "result.tmpl", obj)
 }
 
@@ -196,6 +198,7 @@ func getAniversary(c *gin.Context) {
 	second := aniversary.Message
 	users := strings.Split(aniversary.Users, ",")
 	embed := aniversary.Embed
+	url := aniversary.URL
 
 	var names []string = make([]string, len(users))
 	for key, val := range users {
@@ -204,7 +207,7 @@ func getAniversary(c *gin.Context) {
 
 	full := "." + strings.Join(names, ",") + " " + first + second
 
-	obj := gin.H{"full": full, "first": first, "second": second, "users": users, "embed": embed, "id": id}
+	obj := gin.H{"full": full, "first": first, "second": second, "users": users, "embed": embed, "id": id, "url": url}
 	c.HTML(200, "result.tmpl", obj)
 }
 
