@@ -3,14 +3,11 @@ package crawler
 import (
 	"fmt"
 	"github.com/ChimeraCoder/anaconda"
-	"io/ioutil"
 	"log"
 	_ "log"
 	"math/rand"
-	"net/http"
 	"strings"
 	"time"
-	"encoding/json"
 )
 
 type Anniversary struct {
@@ -90,18 +87,6 @@ func (a Anniversary) CreateFullMessage(first string, second string) string {
 
 type EmbedResponse struct {
 	Html string `json:"html"`
-}
-
-func (a Anniversary) GetEmbededHTML(statusId int64) string {
-	url := fmt.Sprintf("https://api.twitter.com/1/statuses/oembed.json?id=%d&align=center", statusId)
-	r, e := http.Get(url)
-	failIfNeeded(e)
-	body, e := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
-	var er EmbedResponse
-	e2 := json.Unmarshal(body, &er)
-	failIfNeeded(e2)
-	return er.Html
 }
 
 func (a Anniversary) createDateMessage() string {

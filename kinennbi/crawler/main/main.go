@@ -22,8 +22,9 @@ func main() {
 	// TODO: secondは希に空文字がありうるので何とかしたい
 	log.Println(second)
 	// 埋め込み用
-	embed := a.GetEmbededHTML(statusId)
-	log.Println("embed: ", embed)
+	embed := c.GetOEmbed(statusId)
+	log.Println("embed HTML: ", embed.Html)
+	log.Println("embed original url: ", embed.Url)
 	// Tweet用メッセージ
 	full := a.CreateFullMessage(first, second)
 	log.Println(full)

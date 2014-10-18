@@ -25,6 +25,12 @@ func (c Crawler) PostByAniv(message string) {
 	failIfNeeded(e)
 }
 
+func (c Crawler) GetOEmbed(statusId int64) anaconda.OEmbed {
+	r, e := c.Api.GetOEmbedId(statusId, nil)
+	failIfNeeded(e)
+	return r
+}
+
 func (c Crawler) AnalyzeAnniversary() []Anniversary {
 	vs := url.Values{}
 	vs.Set("count", "200")
