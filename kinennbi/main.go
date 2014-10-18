@@ -49,9 +49,9 @@ func authTwitter(c *gin.Context) {
 
 		//tokens = make(map[string]*oauth.RequestToken)
 
-		consumerKey := "n567b7sH6HrPIWBZyhHM2QiaK"
+		consumerKey := "WKs1pXAfWbwat1MPimOWdmoBm"
 
-		consumerSecret := "ygYGJ7aXEh2UQgLI7pOOWU5cixK6o7pDWYVY4MmvRaerJjqLwT"
+		consumerSecret := "0tvflEMDAz0yrjTEKUis3bueEVGjNhBy2tR25pNWRAZpKcAhrO"
 
 		consumer = oauth.NewConsumer(
 			consumerKey,
@@ -181,9 +181,9 @@ func getResult(c *gin.Context) {
 	full := a.CreateFullMessage(first, second)
 	log.Println(full)
 	// Tweetする時はこれで
-	//cr.PostByAniv(full + " http://kinen.yabuchin.com/a/" + id)
+	cr.PostByAniv(full + " http://kinen.yabuchin.com/a/" + id)
 
-	fmt.Println("full: ", full + " http://kinen.yabuchin.com/a/" + id)
+	fmt.Println("full: ", full)
 
 	obj := gin.H{"full": "." + full, "first": first, "second": second, "users": a.Names(), "embed": embed, "id": id, "url": embed.Url}
 	c.HTML(200, "result.tmpl", obj)
