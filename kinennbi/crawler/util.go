@@ -63,7 +63,3 @@ func OutputAniversarries(aniversaries []Anniversary) {
 		log.Println("message: ", aniv.CreateFullMessage(first, second))
 	}
 }
-
-func ChooseBestAniversary(aniversaries []Anniversary) Anniversary {
-	return aniversaries[len(aniversaries)-1]
-}

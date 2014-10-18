@@ -38,6 +38,7 @@ var matchBlacklist = []string{
 	"gt",
 	"ww",
 	"fi",
+	"なに",
 }
 
 type Parser struct {

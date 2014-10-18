@@ -14,6 +14,43 @@ type Anniversary struct {
 	Tweets []anaconda.Tweet
 }
 
+func ChooseBestAniversary(aniversaries []Anniversary) Anniversary {
+	r := aniversaries[0]
+	for i := 1; i < len(aniversaries); i++ {
+		c := aniversaries[i]
+		if c.EvaluatedScore() > r.EvaluatedScore() {
+			r = c
+		}
+	}
+	return r
+}
+
+func (a Anniversary) EvaluatedScore() int {
+	return a.durationScore() + len(a.Names())
+}
+
+func (a Anniversary) durationScore() int {
+	d := a.date()
+	now := time.Now()
+	switch a.durationType(d, now) {
+	case Year:
+		return 100 * (now.Year() - d.Year())
+	case Month:
+		return 4 * (int(now.Month()) - int(d.Month()))
+	case Week:
+		return 2 * ((now.YearDay() - d.YearDay()) / 7)
+	case Today:
+		return 0
+	case Day:
+		diff := now.YearDay() - d.YearDay()
+		if diff % 100 == 0 {
+			return diff / 5
+		}
+		return diff / 100 + 1
+	}
+	return 0
+}
+
 func (a Anniversary) contains(t anaconda.Tweet) bool {
 	for _, myT := range a.Tweets {
 		if myT.Id == t.Id {
@@ -89,22 +126,49 @@ type EmbedResponse struct {
 	Html string `json:"html"`
 }
 
+type durationType int
+
+const (
+	Year durationType = iota
+	Month
+	Week
+	Day
+	Today
+)
+
+func (a Anniversary) durationType(d time.Time, now time.Time) durationType {
+	if d.Year() < now.Year() && d.Month() == now.Month() && d.Day() == now.Day() {
+		return Year
+	}
+	if d.Year() == now.Year() && d.Month() < now.Month() && d.Day() == now.Day() {
+		return Month
+	}
+	if d.Weekday() == now.Weekday() && d.Day() != now.Day() {
+		return Week
+	}
+	if d.Year() == now.Year() && d.Month() == now.Month() && d.Day() == now.Day() {
+		return Today
+	}
+	return Day
+
+}
+
 func (a Anniversary) createDateMessage() string {
 	d := a.date()
 	now := time.Now()
-	if d.Year() < now.Year() && d.Month() == now.Month() && d.Day() == now.Day() {
+	switch a.durationType(d, now) {
+	case Year:
 		return fmt.Sprintf("から%d周年", now.Year()-d.Year())
-	}
-	if d.Year() == now.Year() && d.Month() < now.Month() && d.Day() == now.Day() {
-		return fmt.Sprintf("から%dヶ月", now.Month()-d.Month())
-	}
-	if d.Weekday() == now.Weekday() && d.Day() != now.Day() {
+	case Month:
+		return fmt.Sprintf("から%dヶ月", int(now.Month()) - int(d.Month()))
+	case Week:
 		return fmt.Sprintf("から%d週間", (now.YearDay()-d.YearDay())/7)
-	}
-	if d.Year() == now.Year() && d.Month() == now.Month() && d.Day() == now.Day() {
+	case Today:
 		return ""
+	case Day:
+		return fmt.Sprintf("から%d日", now.YearDay()-d.YearDay())
 	}
-	return fmt.Sprintf("から%d日", now.YearDay()-d.YearDay())
+	return ""
 }
 
 func (a Anniversary) namesWithAtmark() []string {
