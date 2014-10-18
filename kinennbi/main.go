@@ -41,9 +41,9 @@ func hello(c *gin.Context) {
 
 func authTwitter(c *gin.Context) {
 
-	_, err := c.Request.Cookie("token")
+	token, err := c.Request.Cookie("token")
 
-	if err == nil {
+	if err == nil || (token != nil && len(token.Value) == 0 ){
 		c.Redirect(302, "/maketoken")
 	} else {
 
@@ -124,6 +124,28 @@ func getResult(c *gin.Context) {
 		Secret: secret.Value,
 	}
 
+	defer func() {
+		if err := recover(); err != nil {
+			log.Println("work failed:", err)
+
+			t_cookie := http.Cookie{
+			Name:    "token",
+			Value:   "",
+			Expires: time.Now().AddDate(0, 0, 0),
+		}
+
+			v_cookie := http.Cookie{
+			Name:    "secret",
+			Value:   "",
+			Expires: time.Now().AddDate(0, 0, 0),
+		}
+
+			http.SetCookie(c.Writer, &t_cookie)
+			http.SetCookie(c.Writer, &v_cookie)
+			c.Redirect(301, "/")
+		}
+	}()
+
 	accessToken, err := consumer.AuthorizeToken(oauthToken, secret.Value)
 	if err != nil {
 		log.Fatal(err)
@@ -139,22 +161,29 @@ func getResult(c *gin.Context) {
 	a := crawler.ChooseBestAniversary(as)
 	// サイト用メッセージ1
 	first := a.CreateFirstMessage()
-	log.Println(first)
+	//log.Println(first)
 	// サイト用メッセージ2
-	second := a.CreateSecondMessage()
-	log.Println(second)
+	second, statusId := a.CreateSecondMessage()
+	//log.Println(second)
 
+	embed := a.GetEmbededHTML(statusId)
 	// aniversaryをDBに保存
 	aniversary := new(models.Aniversary)
-	id, _ := aniversary.Create(first, second, a.Names())
+	id, _ := aniversary.Create(first, second, a.Names(), embed)
 
 	// Tweet用メッセージ
-	full := a.CreateFullMessage(first, second) + " http://localhost:9090/a/" + id
+	var names []string = make([]string, len(a.Names()))
+	for key, val := range a.Names() {
+		names[key] = "@" + val
+	}
+	full := "." + a.CreateFullMessage(first, second)
 	log.Println(full)
 	// Tweetする時はこれで
 	//	c.PostByAniv(full)
 
-	obj := gin.H{"result": full}
+	fmt.Println("full: ", full)
+
+	obj := gin.H{"full": full, "first": first, "second": second, "users": a.Names(), "embed": embed, "id": id}
 	c.HTML(200, "result.tmpl", obj)
 }
 
@@ -166,8 +195,16 @@ func getAniversary(c *gin.Context) {
 	first := aniversary.Prefix
 	second := aniversary.Message
 	users := strings.Split(aniversary.Users, ",")
+	embed := aniversary.Embed
 
-	obj := gin.H{"first": first, "second": second, "users": users}
+	var names []string = make([]string, len(users))
+	for key, val := range users {
+		names[key] = "@" + val
+	}
+
+	full := "." + strings.Join(names, ",") + " " + first + second
+
+	obj := gin.H{"full": full, "first": first, "second": second, "users": users, "embed": embed, "id": id}
 	c.HTML(200, "result.tmpl", obj)
 }
 
