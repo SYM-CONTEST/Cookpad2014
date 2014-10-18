@@ -11,7 +11,6 @@ type Token struct {
 	Secret string `json:"secret"`
 }
 
-
 func (token Token) Create(t string, s string) bool {
 	db, err := sql.Open("mysql", "root@/symdb")
 	if err != nil {

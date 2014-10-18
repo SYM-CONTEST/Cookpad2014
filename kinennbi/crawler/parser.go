@@ -33,6 +33,7 @@ var matchBlacklist = []string{
 	"そう",
 	"よう",
 	"lt",
+	"gt",
 }
 
 type Parser struct {
@@ -47,7 +48,7 @@ func (parser Parser) ParseToNouns(ss []string) []string {
 	return parser.parseToNouns(s)
 }
 
-func (parser Parser) filterNoise(src []string, a Aniversary, minLength int) []string {
+func (parser Parser) filterNoise(src []string, a Anniversary, minLength int) []string {
 	r := make([]string, 0, len(src))
 	for _, s := range src {
 		if a.containsNealyName(s) {

@@ -25,18 +25,18 @@ func (c Crawler) PostByAniv(message string) {
 	failIfNeeded(e)
 }
 
-func (c Crawler) AnalyzeAnniversary() []Aniversary {
+func (c Crawler) AnalyzeAnniversary() []Anniversary {
 	vs := url.Values{}
 	ts, e := c.Api.GetMentionsTimeline(vs)
 	failIfNeeded(e)
-	aniversaries := make([]Aniversary, 0, len(ts))
+	aniversaries := make([]Anniversary, 0, len(ts))
 	for _, t := range ts {
 		if containsInAnivs(aniversaries, t) {
 			continue
 		}
 		r := make([]anaconda.Tweet, 0, len(ts))
 		r = c.getReplyRecursively(t, r)
-		aniv := Aniversary{Tweets: r}
+		aniv := Anniversary{Tweets: r}
 		//		log.Println("r length: ", len(r))
 		if len(aniv.Names()) > 1 {
 			aniversaries = append(aniversaries, aniv)
