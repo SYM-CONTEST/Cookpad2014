@@ -4,7 +4,6 @@ import (
 	"bitbucket.org/rerofumi/mecab"
 	"fmt"
 	"strings"
-	_"reflect"
 	"github.com/ChimeraCoder/anaconda"
 	"log"
 	"net/url"

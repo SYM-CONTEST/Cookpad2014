@@ -1,7 +1,6 @@
 package main
 
 import (
-	_"reflect"
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/SYM-CONTEST/Cookpad2014/kinennbi/crawler"
 )
