@@ -17,15 +17,15 @@ type Aniversary struct {
     Users string `json:"users"`
 }
 
-func (aniversary Aniversary) Create(prefix string, message string, users []string) bool {
+func (aniversary Aniversary) Create(prefix string, message string, users []string) (string, bool) {
+	var id string
 	db, err := sql.Open("mysql", "root@/symdb")
 	if err != nil {
 		fmt.Println("db connect error")
-		return false
+		return id, false
 	}
 
 	joinedUserNames := strings.Join(users, ",")
-    var id string
 	var statement string
 
 	id = createID()
@@ -40,7 +40,7 @@ func (aniversary Aniversary) Create(prefix string, message string, users []strin
 		_, err = db.Query(statement)
 	}
 
-	return true
+	return id, true
 }
 
 func createID() string {

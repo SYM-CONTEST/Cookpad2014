@@ -1,14 +1,16 @@
 package main
 
 import (
+	"github.com/SYM-CONTEST/Cookpad2014/kinennbi/crawler"
 	"fmt"
 	"github.com/SYM-CONTEST/Cookpad2014/kinennbi/models"
 	"github.com/gin-gonic/gin"
 	"github.com/mrjones/oauth"
-	"io/ioutil"
+	//"io/ioutil"
 	"log"
 	"net/http"
 	"time"
+	"strings"
 )
 
 //var tokens map[string]*oauth.RequestToken
@@ -22,6 +24,8 @@ func main() {
 	r.GET("/", hello)
 	r.GET("/login", authTwitter)
 	r.GET("/maketoken", getTwitterToken)
+	r.GET("/result", getResult)
+	r.GET("/a/:id", getAniversary)
 
 	// jsonレスポンスのお試し
 	r.GET("/json", json)
@@ -77,7 +81,7 @@ func authTwitter(c *gin.Context) {
 
 func getTwitterToken(c *gin.Context) {
 	token, t_err := c.Request.Cookie("token")
-	verifier, v_err := c.Request.Cookie("verifier")
+	secret, v_err := c.Request.Cookie("secret")
 
 	var verificationCode string
 	var tokenKey string
@@ -86,29 +90,11 @@ func getTwitterToken(c *gin.Context) {
 		verificationCode = values.Get("oauth_verifier")
 		tokenKey = values.Get("oauth_token")
 	} else {
-		verificationCode = verifier.Value
+		verificationCode = secret.Value
 		tokenKey = token.Value
 	}
 
-	t := new(models.Token).Get(tokenKey)
-	oauthToken := &oauth.RequestToken{
-		Token:  t.Token,
-		Secret: t.Secret,
-	}
-	accessToken, err := consumer.AuthorizeToken(oauthToken, verificationCode)
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	response, err := consumer.Get(
-		"https://api.twitter.com/1.1/statuses/home_timeline.json",
-		map[string]string{"count": "1"},
-		accessToken)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer response.Body.Close()
 
 	t_cookie := http.Cookie{
 		Name:    "token",
@@ -117,7 +103,7 @@ func getTwitterToken(c *gin.Context) {
 	}
 
 	v_cookie := http.Cookie{
-		Name:    "verifier",
+		Name:    "secret",
 		Value:   verificationCode,
 		Expires: time.Now().AddDate(0, 1, 0),
 	}
@@ -125,8 +111,64 @@ func getTwitterToken(c *gin.Context) {
 	http.SetCookie(c.Writer, &t_cookie)
 	http.SetCookie(c.Writer, &v_cookie)
 
-	bits, err := ioutil.ReadAll(response.Body)
-	c.String(200, "The newest item in your home timeline is: "+string(bits))
+	c.HTML(200, "waiting.tmpl", nil)
+
+}
+
+func getResult(c *gin.Context) {
+	token, _ := c.Request.Cookie("token")
+	secret, _ := c.Request.Cookie("secret")
+
+	oauthToken := &oauth.RequestToken{
+		Token:  token.Value,
+		Secret: secret.Value,
+	}
+
+	accessToken, err := consumer.AuthorizeToken(oauthToken, secret.Value)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 認証した人のcrawlerを生成
+	cr := crawler.NewCrawler(accessToken.Token, accessToken.Secret)
+	// 認証した人のメンションを分析してそれっぽい記念日群を抽出
+	as := cr.AnalyzeAnniversary()
+	// ただの確認出力なので不要
+	// crawler.OutputAniversarries(as)
+	// 記念日群からもっともよさげなものを選定 (今は取り急ぎ最古のもの)
+	a := crawler.ChooseBestAniversary(as)
+	// サイト用メッセージ1
+	first := a.CreateFirstMessage()
+	log.Println(first)
+	// サイト用メッセージ2
+	second := a.CreateSecondMessage()
+	log.Println(second)
+
+	// aniversaryをDBに保存
+	aniversary := new(models.Aniversary)
+	id, _ := aniversary.Create(first, second, a.Names())
+
+	// Tweet用メッセージ
+	full := a.CreateFullMessage(first, second) + " http://localhost:9090/a/" + id
+	log.Println(full)
+	// Tweetする時はこれで
+	//	c.PostByAniv(full)
+
+	obj := gin.H{"result": full}
+	c.HTML(200, "result.tmpl", obj)
+}
+
+func getAniversary(c *gin.Context) {
+	id := c.Params.ByName("id")
+
+	aniversary := new(models.Aniversary).Get(id)
+
+	first := aniversary.Prefix
+	second := aniversary.Message
+	users := strings.Split(aniversary.Users, ",")
+
+	obj := gin.H{"first": first, "second": second, "users": users}
+	c.HTML(200, "result.tmpl", obj)
 }
 
 func createUser(c *gin.Context) {

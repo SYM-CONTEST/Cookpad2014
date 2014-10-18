@@ -14,3 +14,10 @@ create table token (
   token VARCHAR(255) NOT NULL PRIMARY KEY,
   secret VARCHAR(256) NOT NULL
 ) ENGINE=InnoDB;
+
+create table aniversary (
+  id varchar(64) not null primary key,
+  prefix varchar(256) not null,
+  message varchar(256) not null,
+  users varchar(1024) not null
+) ENGINE=InnoDB;
