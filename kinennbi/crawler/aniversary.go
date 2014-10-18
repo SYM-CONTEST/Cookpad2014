@@ -28,27 +28,42 @@ func (a Aniversary) date() time.Time {
 	return t
 }
 
-func (a Aniversary) createMessage() string {
-	str := strings.Join(a.namesWithAtmark(), " ") + "さん、"
-	str += "今日は"
-	names := a.names()
+// ex: 「今日はお二人の」
+func (a Aniversary) CreateFirstMessage() string {
+	str := "今日は"
+	names := a.Names()
 	if len(names) <= 2 {
 		str += "お二人の"
 	} else {
 		str += "皆さんの"
 	}
+	return str
+}
+
+// ex: 「りんご1周年記念日」
+// ランダム要素が入っているので、毎回結果が異なります。
+func (a Aniversary) CreateSecondMessage() string {
 	parser := Parser{}
 	nouns := parser.ParseToNouns(a.tweetStrings())
 	nouns = parser.filterNoise(nouns, a, 2)
 	rand.Seed(time.Now().Unix())
 	index := 0
-	nlen := len(nouns)-1
+	nlen := len(nouns) - 1
 	if nlen > 0 {
-		index = rand.Intn(len(nouns)-1)
+		index = rand.Intn(len(nouns) - 1)
 	}
-	str += nouns[index]
+	str := nouns[index]
 	str += a.createDateMessage()
-	str += "記念日です！"
+	str += "記念日"
+	return str
+}
+
+// Tweet用のフルメッセージ(ex: 「@a @bさん、今日はお二人のりんご1周年記念日です！」
+func (a Aniversary) CreateFullMessage(first string, second string) string {
+	str := strings.Join(a.namesWithAtmark(), " ") + "さん、"
+	str += first
+	str += second
+	str += "です！"
 	return str
 }
 
@@ -62,7 +77,7 @@ func (a Aniversary) createDateMessage() string {
 		return fmt.Sprintf("から%dヶ月", now.Month()-d.Month())
 	}
 	if d.Weekday() == now.Weekday() && d.Day() != now.Day() {
-		return fmt.Sprintf("から%d週間", (now.YearDay()-d.YearDay()) / 7)
+		return fmt.Sprintf("から%d週間", (now.YearDay()-d.YearDay())/7)
 	}
 	if d.Year() == now.Year() && d.Month() == now.Month() && d.Day() == now.Day() {
 		return ""
@@ -71,7 +86,7 @@ func (a Aniversary) createDateMessage() string {
 }
 
 func (a Aniversary) namesWithAtmark() []string {
-	names := a.names()
+	names := a.Names()
 	r := make([]string, 0, len(names))
 	for _, n := range names {
 		r = append(r, "@"+n)
@@ -79,7 +94,7 @@ func (a Aniversary) namesWithAtmark() []string {
 	return r
 }
 
-func (a Aniversary) names() []string {
+func (a Aniversary) Names() []string {
 	r := make([]string, 0, 2)
 	for _, t := range a.Tweets {
 		name := t.User.ScreenName
@@ -99,7 +114,7 @@ func (a Aniversary) names() []string {
 }
 
 func (a Aniversary) containsNealyName(target string) bool {
-	for _, n := range a.names() {
+	for _, n := range a.Names() {
 		if strings.Contains(n, target) {
 			return true
 		}

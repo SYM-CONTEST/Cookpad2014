@@ -10,7 +10,22 @@ type Crawler struct {
 	Api *anaconda.TwitterApi
 }
 
-func (c Crawler) AnalyzeAnniversary() {
+func NewCrawler(accessToken string, accessTokenSecret string) Crawler {
+	anaconda.SetConsumerKey("n567b7sH6HrPIWBZyhHM2QiaK")
+	anaconda.SetConsumerSecret("ygYGJ7aXEh2UQgLI7pOOWU5cixK6o7pDWYVY4MmvRaerJjqLwT")
+	c := Crawler{
+		Api: anaconda.NewTwitterApi(accessToken, accessTokenSecret),
+	}
+	return c
+}
+
+func (c Crawler) PostByAniv(message string) {
+	api := anaconda.NewTwitterApi("2862013525-LWE44BXKxKmfa2tDM0EOPxUkLZGm7labnskp6v7", "WX6AZIPsj5AVWPlaTYhhE8gOE3htiMUAzzQWgqzwqVtFZ")
+	_, e := api.PostTweet(message, nil)
+	failIfNeeded(e)
+}
+
+func (c Crawler) AnalyzeAnniversary() []Aniversary {
 	vs := url.Values{}
 	ts, e := c.Api.GetMentionsTimeline(vs)
 	failIfNeeded(e)
@@ -23,21 +38,11 @@ func (c Crawler) AnalyzeAnniversary() {
 		r = c.getReplyRecursively(t, r)
 		aniv := Aniversary{Tweets: r}
 		//		log.Println("r length: ", len(r))
-		if len(aniv.names()) > 1 {
+		if len(aniv.Names()) > 1 {
 			aniversaries = append(aniversaries, aniv)
 		}
 	}
-
-	log.Println("============SUMMARY============")
-	log.Println("aniversary count: ", len(aniversaries))
-
-	for _, aniv := range aniversaries {
-		//		log.Println("mention count: ", len(aniv.Tweets))
-		log.Println("message: ", aniv.createMessage())
-		//		for _, t := range aniv.Tweets {
-		//			log.Println(t.CreatedAt, t.Text)
-		//		}
-	}
+	return aniversaries
 }
 
 func (c Crawler) AnalyzeMentions() {

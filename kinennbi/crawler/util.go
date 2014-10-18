@@ -37,7 +37,7 @@ func wordCount(ss []string) map[string]int {
 	return res
 }
 
-func containsString(ss[] string, target string) bool {
+func containsString(ss []string, target string) bool {
 	for _, s := range ss {
 		if s == target {
 			return true
@@ -45,11 +45,25 @@ func containsString(ss[] string, target string) bool {
 	}
 	return false
 }
-func containsNearlyString(ss[] string, target string) bool {
+func containsNearlyString(ss []string, target string) bool {
 	for _, s := range ss {
 		if strings.Contains(target, s) {
 			return true
 		}
 	}
 	return false
+}
+
+func OutputAniversarries(aniversaries []Aniversary) {
+	log.Println("============SUMMARY============")
+	log.Println("aniversary count: ", len(aniversaries))
+	for _, aniv := range aniversaries {
+		first := aniv.CreateFirstMessage()
+		second := aniv.CreateSecondMessage()
+		log.Println("message: ", aniv.CreateFullMessage(first, second))
+	}
+}
+
+func ChooseBestAniversary(aniversaries []Aniversary) Aniversary {
+	return aniversaries[len(aniversaries)-1]
 }

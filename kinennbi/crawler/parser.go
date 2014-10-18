@@ -30,6 +30,9 @@ var matchBlacklist = []string{
 	"co",
 	"..",
 	"どの",
+	"そう",
+	"よう",
+	"lt",
 }
 
 type Parser struct {
