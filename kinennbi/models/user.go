@@ -13,10 +13,6 @@ type User struct {
 	Token string `json:"token"`
 }
 
-type Token struct {
-	Token string `json:"token"`
-}
-
 func (user User) Create(name string, password string) (*Token, bool) {
 	db, err := sql.Open("mysql", "root@/symdb")
 	if err != nil {
