@@ -26,7 +26,7 @@ func ChooseBestAniversary(aniversaries []Anniversary) Anniversary {
 }
 
 func (a Anniversary) EvaluatedScore() int {
-	return a.durationScore() + len(a.Names())
+	return a.durationScore() + len(a.Names())*10
 }
 
 func (a Anniversary) durationScore() int {
@@ -43,10 +43,10 @@ func (a Anniversary) durationScore() int {
 		return 0
 	case Day:
 		diff := now.YearDay() - d.YearDay()
-		if diff % 100 == 0 {
+		if diff%100 == 0 {
 			return diff / 5
 		}
-		return diff / 100 + 1
+		return diff/100 + 1
 	}
 	return 0
 }
@@ -160,7 +160,7 @@ func (a Anniversary) createDateMessage() string {
 	case Year:
 		return fmt.Sprintf("から%d周年", now.Year()-d.Year())
 	case Month:
-		return fmt.Sprintf("から%dヶ月", int(now.Month()) - int(d.Month()))
+		return fmt.Sprintf("から%dヶ月", int(now.Month())-int(d.Month()))
 	case Week:
 		return fmt.Sprintf("から%d週間", (now.YearDay()-d.YearDay())/7)
 	case Today:
