@@ -27,7 +27,14 @@ func (c Crawler) PostByAniv(message string) {
 
 func (c Crawler) AnalyzeAnniversary() []Anniversary {
 	vs := url.Values{}
+	vs.Set("count", "200")
 	ts, e := c.Api.GetMentionsTimeline(vs)
+	l := len(ts)
+	start := l-20
+	if start < 0 {
+		start = 0
+	}
+	ts = ts[start:]
 	failIfNeeded(e)
 	aniversaries := make([]Anniversary, 0, len(ts))
 	for _, t := range ts {

@@ -3,10 +3,14 @@ package crawler
 import (
 	"fmt"
 	"github.com/ChimeraCoder/anaconda"
+	"io/ioutil"
+	"log"
 	_ "log"
 	"math/rand"
+	"net/http"
 	"strings"
 	"time"
+	"encoding/json"
 )
 
 type Anniversary struct {
@@ -42,20 +46,37 @@ func (a Anniversary) CreateFirstMessage() string {
 
 // ex: 「りんご1周年記念日」
 // ランダム要素が入っているので、毎回結果が異なります。
-func (a Anniversary) CreateSecondMessage() string {
+func (a Anniversary) CreateSecondMessage() (string, int64) {
 	parser := Parser{}
 	nouns := parser.ParseToNouns(a.tweetStrings())
 	nouns = parser.filterNoise(nouns, a, 2)
+	if len(nouns) < 1 {
+		return "", -1
+	}
 	rand.Seed(time.Now().Unix())
 	index := 0
 	nlen := len(nouns) - 1
 	if nlen > 0 {
 		index = rand.Intn(len(nouns) - 1)
 	}
-	str := nouns[index]
+	n := nouns[index]
+	str := n
 	str += a.createDateMessage()
 	str += "記念日"
-	return str
+	return str, a.ownerTweet(n).Id
+}
+
+func (a Anniversary) ownerTweet(noun string) anaconda.Tweet {
+	log.Println("ownerTweet")
+	for i := len(a.Tweets) - 1; i >= 0; i-- {
+		t := a.Tweets[i]
+		log.Println("t: ", t)
+		if strings.Contains(t.Text, noun) {
+			return t
+		}
+	}
+	failIfNeeded(nil)
+	return a.Tweets[0]
 }
 
 // Tweet用のフルメッセージ(ex: 「@a @bさん、今日はお二人のりんご1周年記念日です！」
@@ -65,6 +86,22 @@ func (a Anniversary) CreateFullMessage(first string, second string) string {
 	str += second
 	str += "です！"
 	return str
+}
+
+type EmbedResponse struct {
+	Html string `json:"html"`
+}
+
+func (a Anniversary) GetEmbededHTML(statusId int64) string {
+	url := fmt.Sprintf("https://api.twitter.com/1/statuses/oembed.json?id=%d&align=center", statusId)
+	r, e := http.Get(url)
+	failIfNeeded(e)
+	body, e := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	var er EmbedResponse
+	e2 := json.Unmarshal(body, &er)
+	failIfNeeded(e2)
+	return er.Html
 }
 
 func (a Anniversary) createDateMessage() string {

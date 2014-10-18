@@ -59,7 +59,7 @@ func OutputAniversarries(aniversaries []Anniversary) {
 	log.Println("aniversary count: ", len(aniversaries))
 	for _, aniv := range aniversaries {
 		first := aniv.CreateFirstMessage()
-		second := aniv.CreateSecondMessage()
+		second, _ := aniv.CreateSecondMessage()
 		log.Println("message: ", aniv.CreateFullMessage(first, second))
 	}
 }
