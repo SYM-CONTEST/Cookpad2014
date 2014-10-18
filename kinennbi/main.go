@@ -91,8 +91,8 @@ func getTwitterToken(c *gin.Context) {
 	}
 
 	t := new(models.Token).Get(tokenKey)
-	oauthToken := &oauth.RequestToken {
-		Token: t.Token,
+	oauthToken := &oauth.RequestToken{
+		Token:  t.Token,
 		Secret: t.Secret,
 	}
 	accessToken, err := consumer.AuthorizeToken(oauthToken, verificationCode)
@@ -113,13 +113,13 @@ func getTwitterToken(c *gin.Context) {
 	t_cookie := http.Cookie{
 		Name:    "token",
 		Value:   tokenKey,
-		Expires: time.Now().AddDate(1, 1, 1),
+		Expires: time.Now().AddDate(0, 1, 0),
 	}
 
 	v_cookie := http.Cookie{
 		Name:    "verifier",
 		Value:   verificationCode,
-		Expires: time.Now().AddDate(1, 1, 1),
+		Expires: time.Now().AddDate(0, 1, 0),
 	}
 
 	http.SetCookie(c.Writer, &t_cookie)

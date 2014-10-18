@@ -1,5 +1,5 @@
 $(function(){
-    $("#login").click(function(){
+    $("#button").click(function(){
         location.href = "/login";
     })
 })
