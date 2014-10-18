@@ -11,8 +11,8 @@ type Crawler struct {
 }
 
 func NewCrawler(accessToken string, accessTokenSecret string) Crawler {
-	anaconda.SetConsumerKey("n567b7sH6HrPIWBZyhHM2QiaK")
-	anaconda.SetConsumerSecret("ygYGJ7aXEh2UQgLI7pOOWU5cixK6o7pDWYVY4MmvRaerJjqLwT")
+	anaconda.SetConsumerKey("WKs1pXAfWbwat1MPimOWdmoBm")
+	anaconda.SetConsumerSecret("0tvflEMDAz0yrjTEKUis3bueEVGjNhBy2tR25pNWRAZpKcAhrO")
 	c := Crawler{
 		Api: anaconda.NewTwitterApi(accessToken, accessTokenSecret),
 	}
@@ -20,7 +20,7 @@ func NewCrawler(accessToken string, accessTokenSecret string) Crawler {
 }
 
 func (c Crawler) PostByAniv(message string) {
-	api := anaconda.NewTwitterApi("2862013525-LWE44BXKxKmfa2tDM0EOPxUkLZGm7labnskp6v7", "WX6AZIPsj5AVWPlaTYhhE8gOE3htiMUAzzQWgqzwqVtFZ")
+	api := anaconda.NewTwitterApi("2862013525-BGq8ZDZ4hxfhW1tbOwHjK63PlR6c2Sf6d9EqRgu", "QrEbfKfrCJF5jRQy7KBYbeXLeMB0W8zaBTK9CvwMQUjfi")
 	_, e := api.PostTweet(message, nil)
 	failIfNeeded(e)
 }
