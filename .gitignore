@@ -28,3 +28,4 @@ DerivedData
 
 # for Intellij
 *.iml
+.idea
