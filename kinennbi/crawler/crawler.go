@@ -27,7 +27,9 @@ func (c Crawler) PostByAniv(message string) {
 
 func (c Crawler) GetOEmbed(statusId int64) anaconda.OEmbed {
 	r, e := c.Api.GetOEmbedId(statusId, nil)
-	failIfNeeded(e)
+	if e != nil {
+		return anaconda.OEmbed{}
+	}
 	return r
 }
 
