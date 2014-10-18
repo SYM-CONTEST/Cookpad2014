@@ -7,7 +7,7 @@ import (
 
 func main() {
 	// 認証した人のcrawlerを生成
-	c := crawler.NewCrawler("298482612-AzpnvM6K8TfLw1kbOVnJTlwlQjEWGEGPgXdd7Viz", "HMvID4dg5K3WF6jo3urHYmsVk2MkAmY4V43kLBRE190DH")
+	c := crawler.NewCrawler("35741880-v1Oe6Ls30CzGRQfhnqTVVENyC5Ylb7INNuKkUJaW6", "jcIXMoG27zE1IW1L3JK2OiSZLn0FOmQMrNvm3uvvdDIN9")
 	// 認証した人のメンションを分析してそれっぽい記念日群を抽出
 	as := c.AnalyzeAnniversary()
 	// ただの確認出力なので不要
@@ -18,8 +18,12 @@ func main() {
 	first := a.CreateFirstMessage()
 	log.Println(first)
 	// サイト用メッセージ2
-	second := a.CreateSecondMessage()
+	second, statusId := a.CreateSecondMessage()
+	// TODO: secondは希に空文字がありうるので何とかしたい
 	log.Println(second)
+	// 埋め込み用
+	embed := a.GetEmbededHTML(statusId)
+	log.Println("embed: ", embed)
 	// Tweet用メッセージ
 	full := a.CreateFullMessage(first, second)
 	log.Println(full)

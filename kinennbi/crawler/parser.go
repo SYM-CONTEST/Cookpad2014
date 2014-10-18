@@ -21,6 +21,8 @@ var containsBlacklist = []string{
 	":",
 	"bPYx",
 	"LAt",
+	"http",
+	".com",
 }
 var matchBlacklist = []string{
 	"さん",
@@ -34,6 +36,7 @@ var matchBlacklist = []string{
 	"よう",
 	"lt",
 	"gt",
+	"ww",
 }
 
 type Parser struct {
