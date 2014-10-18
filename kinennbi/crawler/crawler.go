@@ -25,12 +25,23 @@ func (c Crawler) PostByAniv(message string) {
 	failIfNeeded(e)
 }
 
-func (c Crawler) GetOEmbed(statusId int64) anaconda.OEmbed {
+func (c Crawler) GetOEmbed(statusId int64, candidates []anaconda.Tweet) anaconda.OEmbed {
 	r, e := c.Api.GetOEmbedId(statusId, nil)
 	if e != nil {
-		return anaconda.OEmbed{}
+		return c.tryGetEmbedAll(candidates)
 	}
 	return r
+}
+
+func (c Crawler) tryGetEmbedAll(candidates []anaconda.Tweet) anaconda.OEmbed {
+	for _, t := range candidates {
+		r, e := c.Api.GetOEmbedId(t.Id, nil)
+		if e != nil {
+			continue
+		}
+		return r
+	}
+	return anaconda.OEmbed{}
 }
 
 func (c Crawler) AnalyzeAnniversary() []Anniversary {
@@ -38,7 +49,7 @@ func (c Crawler) AnalyzeAnniversary() []Anniversary {
 	vs.Set("count", "200")
 	ts, e := c.Api.GetMentionsTimeline(vs)
 	l := len(ts)
-	start := l-20
+	start := l - 20
 	if start < 0 {
 		start = 0
 	}
