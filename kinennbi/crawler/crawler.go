@@ -1,8 +1,8 @@
 package crawler
 
 import (
-	"fmt"
 	"github.com/ChimeraCoder/anaconda"
+	"log"
 	"net/url"
 )
 
@@ -14,17 +14,33 @@ func (c Crawler) AnalyzeAnniversary() {
 	vs := url.Values{}
 	ts, e := c.Api.GetMentionsTimeline(vs)
 	failIfNeeded(e)
-	r := make([]anaconda.Tweet, 0, len(ts))
+	aniversaries := make([]Aniversary, 0, len(ts))
 	for _, t := range ts {
+		if containsInAnivs(aniversaries, t) {
+			continue
+		}
+		r := make([]anaconda.Tweet, 0, len(ts))
 		r = c.getReplyRecursively(t, r)
+		aniv := Aniversary{Tweets: r}
+		//		log.Println("r length: ", len(r))
+		if len(aniv.names()) > 1 {
+			aniversaries = append(aniversaries, aniv)
+		}
 	}
-	for _, rt := range r {
-		fmt.Println(rt.Text)
+
+	log.Println("============SUMMARY============")
+	log.Println("aniversary count: ", len(aniversaries))
+
+	for _, aniv := range aniversaries {
+		//		log.Println("mention count: ", len(aniv.Tweets))
+		log.Println("message: ", aniv.createMessage())
+		//		for _, t := range aniv.Tweets {
+		//			log.Println(t.CreatedAt, t.Text)
+		//		}
 	}
 }
 
 func (c Crawler) AnalyzeMentions() {
-
 	vs := url.Values{}
 	ts, e := c.Api.GetMentionsTimeline(vs)
 	failIfNeeded(e)
@@ -40,13 +56,14 @@ func (c Crawler) AnalyzeTimeline() {
 }
 
 func (c Crawler) getReplyRecursively(t anaconda.Tweet, replies []anaconda.Tweet) []anaconda.Tweet {
+	//	log.Println("count: ", len(replies))
+	replies = append(replies, t)
+	log.Println("text: ", t.Text)
 	rid := t.InReplyToStatusID
 	if rid == 0 {
 		return replies
 	}
 	nextT, e := c.Api.GetTweet(t.InReplyToStatusID, nil)
 	failIfNeeded(e)
-	fmt.Println("count: ", len(replies))
-	replies = append(replies, nextT)
 	return c.getReplyRecursively(nextT, replies)
 }

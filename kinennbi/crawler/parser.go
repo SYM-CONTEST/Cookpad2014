@@ -2,14 +2,69 @@ package crawler
 
 import (
 	"bitbucket.org/rerofumi/mecab"
+	"bytes"
 	"log"
 	"strings"
+	"unicode/utf8"
 )
+
+var containsBlacklist = []string{
+	"@",
+	"_",
+	"‿",
+	"´",
+	"｀",
+	"｀",
+	")",
+	"(",
+	"/",
+	":",
+	"bPYx",
+	"LAt",
+}
+var matchBlacklist = []string{
+	"さん",
+	"これ",
+	"at",
+	"via",
+	"co",
+	"..",
+	"どの",
+}
 
 type Parser struct {
 }
 
-func (parser Parser) parseNouns(s string) []string {
+func (parser Parser) ParseToNouns(ss []string) []string {
+	var b bytes.Buffer
+	for _, s := range ss {
+		b.WriteString(s)
+	}
+	s := b.String()
+	return parser.parseToNouns(s)
+}
+
+func (parser Parser) filterNoise(src []string, a Aniversary, minLength int) []string {
+	r := make([]string, 0, len(src))
+	for _, s := range src {
+		if a.containsNealyName(s) {
+			continue
+		}
+		if utf8.RuneCountInString(s) < minLength {
+			continue
+		}
+		if containsString(matchBlacklist, s) {
+			continue
+		}
+		if containsNearlyString(containsBlacklist, s) {
+			continue
+		}
+		r = append(r, s)
+	}
+	return r
+}
+
+func (parser Parser) parseToNouns(s string) []string {
 	p, e := mecab.Parse(s)
 	if e != nil {
 		log.Fatalln(e)

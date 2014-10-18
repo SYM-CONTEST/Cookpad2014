@@ -22,10 +22,10 @@ func printResults(ts []anaconda.Tweet) {
 func printResult(t anaconda.Tweet) {
 	fmt.Println("InReplyToStatusID: ", t.InReplyToStatusID)
 	p := Parser{}
-	tt := p.parseNouns(t.Text)
-	wc := wordCount(tt)
-	for v, k := range wc {
-		fmt.Println(k, v)
+	ns := p.ParseToNouns([]string{t.Text})
+	wc := wordCount(ns)
+	for noun, count := range wc {
+		fmt.Println(count, noun)
 	}
 }
 
@@ -35,4 +35,21 @@ func wordCount(ss []string) map[string]int {
 		res[strings.ToLower(str)]++
 	}
 	return res
+}
+
+func containsString(ss[] string, target string) bool {
+	for _, s := range ss {
+		if s == target {
+			return true
+		}
+	}
+	return false
+}
+func containsNearlyString(ss[] string, target string) bool {
+	for _, s := range ss {
+		if strings.Contains(target, s) {
+			return true
+		}
+	}
+	return false
 }
