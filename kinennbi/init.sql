@@ -21,5 +21,6 @@ create table aniversary (
   prefix varchar(256) not null,
   message varchar(256) not null,
   users varchar(1024) not null,
-  embed varchar(2048)
+  embed varchar(2048),
+  url varchar(1024)
 ) ENGINE=InnoDB;

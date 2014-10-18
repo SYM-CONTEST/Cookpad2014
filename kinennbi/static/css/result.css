@@ -5,8 +5,8 @@ body{
 	background-image: url(../images/img_bg.png);
 	background-repeat: no-repeat;
 	background-position: center 0 ;
-　　background-attachment: fixed; 
-   text-align: center;
+    background-attachment: fixed;
+    text-align: center;
 }
 
 #wrapper{
@@ -95,6 +95,7 @@ body{
     /*left: 380px;*/
     font-weight: bold;
     width: 100%;
+    margin: auto;
 }
 
 #mainContent .contentBox1 .contentText .txt_b{
@@ -107,4 +108,15 @@ body{
     position: absolute;
     left: 206px;
     margin-top: 20px;
+}
+
+#mainContent .contentBox2 .contentText iframe{
+    margin: auto !important;
+    margin-bottom: 20px !important;
+    margin-top: 20px !important;
+}
+
+#mainContent .contentBox2 .contentText .aniv_tweet {
+    font-size: 18px;
+    font-weight: bold;
 }
