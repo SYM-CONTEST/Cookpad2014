@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"sym/kinennbi/models"
+	"github.com/SYM-CONTEST/Cookpad2014/kinennbi/models"
 )
 
 func main() {
@@ -18,6 +18,7 @@ func main() {
 func hello(c *gin.Context) {
 	obj := gin.H{"title": "Main website"}
 	c.HTML(200, "index.tmpl", obj)
+
 }
 
 func createUser(c *gin.Context) {
