@@ -11,5 +11,6 @@ func main() {
 	api := anaconda.NewTwitterApi("35741880-LCcGJm0iTTj84yn0Ch1tmpuw0ujCCl1JkdwErkPfj", "V7Vpxbu1l40Qo2q8tzosF5JwEhryNuRsP6CU94ixSo4VX")
 
 	//	analyzeHoge(api)
-	crawler.AnalyzeAnniversary(api)
+	c := crawler.Crawler{Api: api}
+	c.AnalyzeAnniversary()
 }
