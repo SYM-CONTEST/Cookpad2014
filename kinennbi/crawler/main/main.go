@@ -6,10 +6,10 @@ import (
 )
 
 func main() {
-	anaconda.SetConsumerKey("qercs5E6GZeMwNaDOSocGnMQ6")
-	anaconda.SetConsumerSecret("gh3j3EtQU3Kr8PtEf8GhoDJokkYHwCnFvrt2muu8W75bXXFi72")
-	api := anaconda.NewTwitterApi("35741880-LCcGJm0iTTj84yn0Ch1tmpuw0ujCCl1JkdwErkPfj", "V7Vpxbu1l40Qo2q8tzosF5JwEhryNuRsP6CU94ixSo4VX")
+	anaconda.SetConsumerKey("n567b7sH6HrPIWBZyhHM2QiaK")
+	anaconda.SetConsumerSecret("ygYGJ7aXEh2UQgLI7pOOWU5cixK6o7pDWYVY4MmvRaerJjqLwT")
+	api := anaconda.NewTwitterApi("298482612-AzpnvM6K8TfLw1kbOVnJTlwlQjEWGEGPgXdd7Viz", "HMvID4dg5K3WF6jo3urHYmsVk2MkAmY4V43kLBRE190DH")
 
-	//	analyzeHoge(api)
-	crawler.AnalyzeAnniversary(api)
+	c := crawler.Crawler{Api: api}
+	c.AnalyzeAnniversary()
 }
