@@ -26,6 +26,9 @@ func ChooseBestAniversary(aniversaries []Anniversary) Anniversary {
 }
 
 func (a Anniversary) EvaluatedScore() int {
+	if len(a.nouns()) == 0 {
+		return 0
+	}
 	return a.durationScore() + len(a.Names())*10
 }
 
@@ -81,9 +84,7 @@ func (a Anniversary) CreateFirstMessage() string {
 // ex: 「りんご1周年記念日」
 // ランダム要素が入っているので、毎回結果が異なります。
 func (a Anniversary) CreateSecondMessage() (string, int64) {
-	parser := Parser{}
-	nouns := parser.ParseToNouns(a.tweetStrings())
-	nouns = parser.filterNoise(nouns, a, 2)
+	nouns := a.nouns()
 	if len(nouns) < 1 {
 		return "", -1
 	}
@@ -98,6 +99,13 @@ func (a Anniversary) CreateSecondMessage() (string, int64) {
 	str += a.createDateMessage()
 	str += "記念日"
 	return str, a.ownerTweet(n).Id
+}
+
+func (a Anniversary) nouns() []string {
+	parser := Parser{}
+	nouns := parser.ParseToNouns(a.tweetStrings())
+	nouns = parser.filterNoise(nouns, a, 2)
+	return nouns
 }
 
 func (a Anniversary) ownerTweet(noun string) anaconda.Tweet {
