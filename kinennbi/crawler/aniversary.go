@@ -7,7 +7,6 @@ import (
 	"math/rand"
 	"strings"
 	"time"
-	"log"
 )
 
 type Aniversary struct {
