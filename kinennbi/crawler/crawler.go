@@ -95,6 +95,9 @@ func (c Crawler) getReplyRecursively(t anaconda.Tweet, replies []anaconda.Tweet)
 		return replies
 	}
 	nextT, e := c.Api.GetTweet(t.InReplyToStatusID, nil)
-	failIfNeeded(e)
+	if e != nil {
+		log.Println(e)
+		return replies
+	}
 	return c.getReplyRecursively(nextT, replies)
 }
