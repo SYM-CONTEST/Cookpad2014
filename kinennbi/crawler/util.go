@@ -9,7 +9,7 @@ import (
 
 func failIfNeeded(e error) {
 	if e != nil {
-		log.Fatalln(e)
+		log.Println(e)
 	}
 }
 
@@ -29,15 +29,7 @@ func printResult(t anaconda.Tweet) {
 	}
 }
 
-func wordCount(ss []string) map[string]int {
-	res := make(map[string]int)
-	for _, str := range ss {
-		res[strings.ToLower(str)]++
-	}
-	return res
-}
-
-func containsString(ss[] string, target string) bool {
+func containsString(ss []string, target string) bool {
 	for _, s := range ss {
 		if s == target {
 			return true
@@ -45,7 +37,7 @@ func containsString(ss[] string, target string) bool {
 	}
 	return false
 }
-func containsNearlyString(ss[] string, target string) bool {
+func containsNearlyString(ss []string, target string) bool {
 	for _, s := range ss {
 		if strings.Contains(target, s) {
 			return true

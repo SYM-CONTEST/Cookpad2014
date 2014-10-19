@@ -7,7 +7,7 @@ import (
 
 func main() {
 	// 認証した人のcrawlerを生成
-	c := crawler.NewCrawler("35741880-v1Oe6Ls30CzGRQfhnqTVVENyC5Ylb7INNuKkUJaW6", "jcIXMoG27zE1IW1L3JK2OiSZLn0FOmQMrNvm3uvvdDIN9")
+	c := crawler.NewCrawler("35741880-nEBx773oAZqU4aMq246CrO3o3YguX5fpvjSSFue0V", "GYPNfRUHKOmkIEqSf72Ilh5aqAn37L78asXevSfFopGkc")
 	// 認証した人のメンションを分析してそれっぽい記念日群を抽出
 	as := c.AnalyzeAnniversary()
 	// ただの確認出力なので不要

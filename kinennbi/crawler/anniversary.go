@@ -105,6 +105,7 @@ func (a Anniversary) nouns() []string {
 	parser := Parser{}
 	nouns := parser.ParseToNouns(a.tweetStrings())
 	nouns = parser.filterNoise(nouns, a, 2)
+	nouns = parser.filterDuplicateNounIfCan(nouns)
 	return nouns
 }
 
