@@ -20,7 +20,7 @@ func NewCrawler(accessToken string, accessTokenSecret string) Crawler {
 }
 
 func (c Crawler) PostByAniv(message string) error {
-	api := anaconda.NewTwitterApi("2862013525-BGq8ZDZ4hxfhW1tbOwHjK63PlR6c2Sf6d9EqRgu", "QrEbfKfrCJF5jRQy7KBYbeXLeMB0W8zaBTK9CvwMQUjfi")
+	api := anaconda.NewTwitterApi("2862013525-d0TOEdgmXJilHO2XPM49wcNAjiv6FmbbPACguUp", "7qw3VgqV91Dox7ldmmZgqHJ05qVUmcfKpKUMGm7R5PMqH")
 	_, e := api.PostTweet(message, nil)
 	log.Println(e)
 	return e
