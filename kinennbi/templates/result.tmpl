@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ja">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="content-style-type" content="text/css">
+    <meta http-equiv="content-script-type" content="text/javascript">
+    <title> 「{{.first}}{{.second}}」| 勝手にアニバーサリー</title>
+    <link rel="stylesheet" href="/static/css/reset.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/result.css" type="text/css">
+</head>
+<body>
+<div id="wrapper">
+    <div id="header" role="banner">
+        <div class="logoWrap">
+            <div class="logo">
+                <h1 class="plogo"><a href="/index.html"><img src="/static/images/img_title.png" width="457" height="95" alt="勝手にアニバーサリー"></a></h1>
+
+            </div>
+        </div>
+        <!-- /#header -->
+
+        <div id="mainContent" role="main">
+            <div class="mainVisual">
+                <h1 class="mainTtl"><img src="/static/images/img_cong.png" width="597" height="111" alt="おめでとうございます！！"></h1>
+                <span class="icon"><img src="/static/images/img_anniva.png" width="254" height="227" alt="アニバくん"></span>
+            </div>
+            <div class="contentBox1">
+                <div class="contentTtl">おめでとうカード</div>
+                {{range $index, $user := .users}}
+                <div class="contentMainicon{{$index}}"><img src="http://www.paper-glasses.com/api/twipi/{{$user}}/original" width="120" height="120"><br/>
+                    <a href="https://twitter.com/{{$user}}">@{{$user}}</a>さん</div>
+                {{end}}
+                <div class="contentText">{{.first}}<br/> <span class="txt_b">{{.second}}</span>です！！</div>
+            </div>
+            <div class="contentBox2">
+                <div class="contentText">
+                    <span class="aniv_tweet">記念日の元となったツイートは<a href="{{.url}}" target="_blank">こちら</a></span>
+                </div>
+                <span class="contentUnder"><img src="/static/images/img_line.gif" width="581" height="13"></span>
+            </div>
+        </div>
+        <!-- /#mainContent -->
+
+    </div>
+</body>
+</html>

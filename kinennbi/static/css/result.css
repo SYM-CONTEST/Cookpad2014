@@ -1,0 +1,122 @@
+/*////////共通部分////////////*/
+
+body{
+	background-color: #FFF;
+	background-image: url(../images/img_bg.png);
+	background-repeat: no-repeat;
+	background-position: center 0 ;
+    background-attachment: fixed;
+    text-align: center;
+}
+
+#wrapper{
+	width:1000px;
+	margin:0 auto;
+}
+
+
+/*////////ロゴ部分////////////*/
+
+
+#header .plogo{
+	margin: 0 auto;
+	width: 457px; 
+	padding-top: 80px;
+}
+
+
+/*////////メイン部分////////////*/
+
+#mainContent{
+	position: relative;
+
+}
+#mainContent .mainVisual .mainTtl{
+	margin: 0 auto;
+	width: 597px;
+	padding-top: 30px;
+
+
+}
+#mainContent .mainVisual .mainTtl img{
+	position: relative;
+	z-index: 200;
+
+
+}
+#mainContent .mainVisual .icon img{
+	position: absolute;
+    top: 400px;
+    right: 0px;
+    z-index: 3;
+
+
+}
+
+/*////////カード部分////////////*/
+#mainContent .contentBox1 .contentTtl {
+	margin-top: -35px;
+	background-image: url(../images/img_card.png);
+	text-indent: -9999px;
+    background-repeat: no-repeat;
+    background-position: 203px 0px;
+    width: 1000px;
+    height: 520px;
+    z-index: 1;
+
+}
+
+
+#mainContent .contentBox1{
+	position: relative;
+    margin-bottom: 20px;
+}
+
+#mainContent .contentBox1 .contentMainicon0 {
+ position: absolute;
+ /*float: left;*/
+ top: 70px;
+ left: 353px;
+}
+
+#mainContent .contentBox1 .contentMainicon1 {
+ position: absolute;
+ top: 70px;
+ left: 513px;
+}
+
+#mainContent .contentBox1 img {
+    border-radius: 50%;
+}
+
+#mainContent .contentBox1 .contentText {
+    position: absolute;
+    top: 280px;
+    /*left: 380px;*/
+    font-weight: bold;
+    width: 100%;
+    margin: auto;
+}
+
+#mainContent .contentBox1 .contentText .txt_b{
+    font-size: 32px;
+    font-weight: bold;
+    color: mediumvioletred;
+}
+
+#mainContent .contentBox2 .contentUnder {
+    position: absolute;
+    left: 206px;
+    margin-top: 20px;
+}
+
+#mainContent .contentBox2 .contentText iframe{
+    margin: auto !important;
+    margin-bottom: 20px !important;
+    margin-top: 20px !important;
+}
+
+#mainContent .contentBox2 .contentText .aniv_tweet {
+    font-size: 18px;
+    font-weight: bold;
+}
