@@ -42,6 +42,7 @@ var matchBlacklist = []string{
 	"ちゃん",
 	"どこ",
 	"たん",
+	"};",
 }
 
 type Parser struct {
