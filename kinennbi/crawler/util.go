@@ -37,7 +37,7 @@ func wordCount(ss []string) map[string]int {
 	return res
 }
 
-func containsString(ss[] string, target string) bool {
+func containsString(ss []string, target string) bool {
 	for _, s := range ss {
 		if s == target {
 			return true
@@ -45,7 +45,7 @@ func containsString(ss[] string, target string) bool {
 	}
 	return false
 }
-func containsNearlyString(ss[] string, target string) bool {
+func containsNearlyString(ss []string, target string) bool {
 	for _, s := range ss {
 		if strings.Contains(target, s) {
 			return true
