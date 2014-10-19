@@ -76,6 +76,28 @@ func (parser Parser) filterNoise(src []string, a Anniversary, minLength int) []s
 	return r
 }
 
+func (parser Parser) filterDuplicateNounIfCan(src []string) []string {
+	r := make([]string, 0, len(src))
+	wc := wordCount(src)
+	for v, c := range wc {
+		if c > 1 {
+			r = append(r, v)
+		}
+	}
+	if len(r) > 0 {
+		return r
+	}
+	return src
+}
+
+func wordCount(ss []string) map[string]int {
+	res := make(map[string]int)
+	for _, str := range ss {
+		res[strings.ToLower(str)]++
+	}
+	return res
+}
+
 func (parser Parser) parseToNouns(s string) []string {
 	p, e := mecab.Parse(s)
 	if e != nil {

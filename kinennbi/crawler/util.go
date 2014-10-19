@@ -29,14 +29,6 @@ func printResult(t anaconda.Tweet) {
 	}
 }
 
-func wordCount(ss []string) map[string]int {
-	res := make(map[string]int)
-	for _, str := range ss {
-		res[strings.ToLower(str)]++
-	}
-	return res
-}
-
 func containsString(ss []string, target string) bool {
 	for _, s := range ss {
 		if s == target {
