@@ -15,6 +15,7 @@ import (
 
 //var tokens map[string]*oauth.RequestToken
 var consumer *oauth.Consumer
+var tokenStore *models.Token
 
 func main() {
 	gin.SetMode(gin.ReleaseMode)
@@ -41,7 +42,8 @@ func hello(c *gin.Context) {
 
 func authTwitter(c *gin.Context) {
 
-	token, err := c.Request.Cookie("token")
+	token, err := c.Request.Cookie("accesstoken")
+	tokenStore = new(models.Token)
 
 	if err == nil || (token != nil && len(token.Value) == 0 ){
 		c.Redirect(302, "/maketoken")
@@ -80,49 +82,53 @@ func authTwitter(c *gin.Context) {
 }
 
 func getTwitterToken(c *gin.Context) {
-	token, t_err := c.Request.Cookie("token")
-	secret, v_err := c.Request.Cookie("secret")
+	token, t_err := c.Request.Cookie("accesstoken")
 
 	var verificationCode string
 	var tokenKey string
-	if t_err != nil && v_err != nil {
+	var accessTokenStr string
+	if t_err != nil {
 		values := c.Request.URL.Query()
 		verificationCode = values.Get("oauth_verifier")
 		tokenKey = values.Get("oauth_token")
 	} else {
-		verificationCode = secret.Value
-		tokenKey = token.Value
+		accessTokenStr = token.Value
 	}
 
+	oauthToken := &oauth.RequestToken{
+		Token:  tokenKey,
+		Secret: verificationCode,
+	}
 
+	var accessToken *oauth.AccessToken
+	var t string
+	var s string
+	if len(accessTokenStr) == 0 {
+		accessToken, _ = consumer.AuthorizeToken(oauthToken, verificationCode)
+		t = accessToken.Token
+		s = accessToken.Secret
+	} else {
+		tmp := tokenStore.Get(accessTokenStr)
+		t = tmp.Token
+		s = tmp.Secret
+	}
+
+	tokenStore.Create(t, s)
 
 	t_cookie := http.Cookie{
-		Name:    "token",
-		Value:   tokenKey,
-		Expires: time.Now().AddDate(0, 1, 0),
-	}
-
-	v_cookie := http.Cookie{
-		Name:    "secret",
-		Value:   verificationCode,
+		Name:    "accesstoken",
+		Value:   t,
 		Expires: time.Now().AddDate(0, 1, 0),
 	}
 
 	http.SetCookie(c.Writer, &t_cookie)
-	http.SetCookie(c.Writer, &v_cookie)
 
 	c.HTML(200, "waiting.tmpl", nil)
 
 }
 
 func getResult(c *gin.Context) {
-	token, _ := c.Request.Cookie("token")
-	secret, _ := c.Request.Cookie("secret")
-
-	oauthToken := &oauth.RequestToken{
-		Token:  token.Value,
-		Secret: secret.Value,
-	}
+	token, _ := c.Request.Cookie("accesstoken")
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -146,10 +152,7 @@ func getResult(c *gin.Context) {
 		}
 	}()
 
-	accessToken, err := consumer.AuthorizeToken(oauthToken, secret.Value)
-	if err != nil {
-		log.Fatal(err)
-	}
+	accessToken := tokenStore.Get(token.Value)
 
 	// 認証した人のcrawlerを生成
 	cr := crawler.NewCrawler(accessToken.Token, accessToken.Secret)
@@ -168,7 +171,7 @@ func getResult(c *gin.Context) {
 	//log.Println(second)
 
 	//embed := a.GetEmbededHTML(statusId)
-	embed := cr.GetOEmbed(statusId)
+	embed := cr.GetOEmbed(statusId, a.Tweets)
 	// aniversaryをDBに保存
 	aniversary := new(models.Aniversary)
 	id, _ := aniversary.Create(first, second, a.Names(), embed.Html, embed.Url)
@@ -185,7 +188,7 @@ func getResult(c *gin.Context) {
 
 	fmt.Println("full: ", full)
 
-	obj := gin.H{"full": "." + full, "first": first, "second": second, "users": a.Names(), "embed": embed, "id": id, "url": embed.Url}
+	obj := gin.H{"full": "." + full, "first": first, "second": second, "users": a.Names(), "embed": embed, "id": id, "embedUrl": embed.Url}
 	c.HTML(200, "result.tmpl", obj)
 }
 
@@ -207,7 +210,7 @@ func getAniversary(c *gin.Context) {
 
 	full := "." + strings.Join(names, ",") + " " + first + second
 
-	obj := gin.H{"full": full, "first": first, "second": second, "users": users, "embed": embed, "id": id, "url": url}
+	obj := gin.H{"full": full, "first": first, "second": second, "users": users, "embed": embed, "id": id, "embedUrl": url}
 	c.HTML(200, "result.tmpl", obj)
 }
 
