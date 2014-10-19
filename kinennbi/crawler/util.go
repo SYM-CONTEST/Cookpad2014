@@ -9,7 +9,7 @@ import (
 
 func failIfNeeded(e error) {
 	if e != nil {
-		log.Fatalln(e)
+		log.Println(e)
 	}
 }
 
