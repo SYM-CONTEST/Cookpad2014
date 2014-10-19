@@ -41,6 +41,7 @@ var matchBlacklist = []string{
 	"なに",
 	"ちゃん",
 	"どこ",
+	"たん",
 }
 
 type Parser struct {
