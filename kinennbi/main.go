@@ -135,19 +135,12 @@ func getResult(c *gin.Context) {
 			log.Println("work failed:", err)
 
 			t_cookie := http.Cookie{
-			Name:    "token",
-			Value:   "",
-			Expires: time.Now().AddDate(0, 0, 0),
-		}
-
-			v_cookie := http.Cookie{
-			Name:    "secret",
+			Name:    "accesstoken",
 			Value:   "",
 			Expires: time.Now().AddDate(0, 0, 0),
 		}
 
 			http.SetCookie(c.Writer, &t_cookie)
-			http.SetCookie(c.Writer, &v_cookie)
 			c.Redirect(301, "/")
 		}
 	}()
