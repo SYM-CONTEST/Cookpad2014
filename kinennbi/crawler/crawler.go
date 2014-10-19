@@ -19,10 +19,11 @@ func NewCrawler(accessToken string, accessTokenSecret string) Crawler {
 	return c
 }
 
-func (c Crawler) PostByAniv(message string) {
+func (c Crawler) PostByAniv(message string) error {
 	api := anaconda.NewTwitterApi("2862013525-BGq8ZDZ4hxfhW1tbOwHjK63PlR6c2Sf6d9EqRgu", "QrEbfKfrCJF5jRQy7KBYbeXLeMB0W8zaBTK9CvwMQUjfi")
 	_, e := api.PostTweet(message, nil)
-	failIfNeeded(e)
+	log.Println(e)
+	return e
 }
 
 func (c Crawler) GetOEmbed(statusId int64, candidates []anaconda.Tweet) anaconda.OEmbed {
